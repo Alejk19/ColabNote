@@ -2,6 +2,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cors from 'cors';
 
 //Import dentro de la app
 import rutasProyectos from "./routes/proyectos.routes.js";
@@ -14,8 +15,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
+
 app.listen(PORT, () => console.log("Server up!")); //Iniciar servidor
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/proyectos", rutasProyectos);
 app.use("/api/tareas", rutasTareas);
