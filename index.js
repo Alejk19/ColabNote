@@ -3,6 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 
 //Import dentro de la app
 import rutasProyectos from "./routes/proyectos.routes.js";
@@ -19,6 +20,7 @@ app.use(cors());
 
 app.listen(PORT, () => console.log("Server up!")); //Iniciar servidor
 app.use(express.json());
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/proyectos", rutasProyectos);

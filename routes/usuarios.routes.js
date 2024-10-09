@@ -65,8 +65,17 @@ router.post("/login", async (req, res) => {
   }
 
   const token = generateToken(usuario);
+  res.cookie("token", token);
+
   usuario.token = token;
-  res.json({token});
+  res.json(usuario)
+});
+
+router.post("/logout", async(req, res) => {
+  res.cookie('token', '', {
+    expires: new Date(0)
+  });
+  return res.sendStatus(200)
 });
 
 //Le manda una notificacion a un usuario

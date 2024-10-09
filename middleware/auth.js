@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 export const auth = (req, res, next) => {
 
-  const token = req.header('Authorization');
+  const { token } = req.cookies;
 
   console.log(token)
   if (!token) {
@@ -10,7 +10,10 @@ export const auth = (req, res, next) => {
 
   try {
     // Verificar el token
-    const user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+    jwt.verify(token, process.env.JWT_PRIVATE_KEY, (err, user) => {
+      if(err)  return res.status(401).json({ msg: 'Token no válido' });
+    });
+    console.log(user)
     req.user = user.id; // Almacenar el ID del usuario en el objeto de solicitud
     next(); // Continuar con la siguiente función de middleware o ruta
   } catch (err) {
