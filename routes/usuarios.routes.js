@@ -65,7 +65,11 @@ router.post("/login", async (req, res) => {
   }
 
   const token = generateToken(usuario);
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: false,
+    secure: true,
+    sameSite: "none",
+  });
 
   usuario.token = token;
   res.json(usuario)
