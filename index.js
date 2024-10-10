@@ -2,7 +2,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import cors from 'cors';
+import cors from "cors";
 import cookieParser from "cookie-parser";
 
 //Import dentro de la app
@@ -16,11 +16,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: "Content-Type, Authorization",
+  })
+);
 
 app.listen(PORT, () => console.log("Server up!")); //Iniciar servidor
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/proyectos", rutasProyectos);
