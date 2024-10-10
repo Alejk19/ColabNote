@@ -1,4 +1,5 @@
 import { Router } from "express";
+import jwt from "jsonwebtoken";
 import usuarioModel from "../models/usuarios.model.js";
 import { createHash, generateToken, isValidPassword } from "../utils.js";
 
@@ -72,14 +73,27 @@ router.post("/login", async (req, res) => {
   });
 
   usuario.token = token;
-  res.json(usuario)
+  res.json(usuario);
 });
 
-router.post("/logout", async(req, res) => {
-  res.cookie('token', '', {
-    expires: new Date(0)
+router.get("/verificarToken", async (req, res) => {
+  const { token } = req.cookies;
+  if (!token) return res.status(401).json({ msg: "No autorizado" });
+
+  jwt.verify(token, process.env.JWT_PRIVATE_KEY, async (err, user) => {
+    if (err) return res.status(401).json({ msg: "No autorizado" });
+
+    const usuario = await usuarioModel.findById(user.id);
+    if (!usuario) return res.status(401).json({ msg: "No autorizado" });
+    return res.json(usuario);
   });
-  return res.sendStatus(200)
+});
+
+router.post("/logout", async (req, res) => {
+  res.cookie("token", "", {
+    expires: new Date(0),
+  });
+  return res.sendStatus(200);
 });
 
 //Le manda una notificacion a un usuario
